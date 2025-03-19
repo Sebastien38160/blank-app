@@ -1,4 +1,37 @@
 import streamlit as st
+
+st.markdown(
+    """
+    <style>
+    /* Cibler les titres principaux */
+    h1 {
+        color: #007bff !important; /* Bleu */
+    }
+
+    /* Cibler les sous-titres */
+    h2, h3 {
+        color: #28a745 !important; /* Vert */
+    }
+
+    /* Cibler les paragraphes qui servent de sous-titres */
+    /* Remplacez .votre-classe-de-sous-titre par la classe réelle */
+    .st-emotion-cache-r421ms p {
+        color: #6c757d !important; /* Gris */
+    }
+
+    /* Ajoutez d'autres sélecteurs et styles ici */
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Le reste de votre application Streamlit...
+
+
+
+
+
+import streamlit as st
 import pandas as pd 
 from PIL import Image
 import numpy as np 
@@ -20,6 +53,7 @@ page = st.sidebar.radio("Choisissez une page :", ["Accueil", "Exploration de don
 if page == "Accueil":
     st.title("🎮 Bienvenue sur l'Accueil !")
     st.write("Choisissez une option dans la barre latérale pour commencer.")
+
 
 # --- Page Exploration de données ---
 elif page == "Exploration de données":
@@ -95,10 +129,11 @@ import seaborn as sns
 
 # Charger le fichier CSV (assurez-vous que le chemin est correct)
 df = pd.read_csv("vgsales_cleaned.csv")
+
 # --- Page Accueil ---
 if page == "Accueil":
     st.title("Bienvenue !")
-    st.write("Choisissez l'onglet Visualisation pour voir le graphique.")
+    st.write("Choisissez l'onglet Visualisation pour voir les graphiques.")
 
 # --- Page Visualisation ---
 elif page == "Visualisation":
@@ -324,3 +359,242 @@ elif page == "Visualisation":
 
     # Affichage du graphique dans Streamlit
     st.plotly_chart(fig)
+
+
+# --- Page Accueil ---
+if page == "Accueil":
+    pass  # Ne rien afficher dans l'onglet Accueil
+
+# --- Page Exploration de données ---
+elif page == "Exploration de données":
+    st.title("Exploration de données")
+
+    # Filtres interactifs
+    genre_options = ['Tous'] + list(df['Genre'].unique())
+    selected_genre = st.selectbox("Filtrer par genre", genre_options)
+
+    platform_options = ['Toutes'] + list(df['Plateforme'].unique())
+    selected_platform = st.multiselect("Filtrer par plateforme", platform_options)
+
+    year_options = ['Toutes'] + list(df['Année'].dropna().unique().astype(int))
+    selected_year = st.selectbox("Filtrer par année", year_options)
+
+    # Filtrage des données
+    filtered_df = df.copy()
+    if selected_genre != 'Tous':
+        filtered_df = filtered_df[filtered_df['Genre'] == selected_genre]
+
+    if 'Toutes' not in selected_platform:
+        filtered_df = filtered_df[filtered_df['Plateforme'].isin(selected_platform)]
+
+    if selected_year != 'Toutes':
+        filtered_df = filtered_df[filtered_df['Année'] == selected_year]
+
+    # Affichage des données filtrées
+    st.write(f"Nombre de jeux affichés: {filtered_df.shape[0]}")
+    st.dataframe(filtered_df)
+
+# --- Page Visualisation ---
+elif page == "Visualisation":
+    # ... (votre code de visualisation) ...
+    pass
+
+# --- Page Accueil ---
+if page == "Accueil":
+    pass  # Ne rien afficher dans l'onglet Accueil
+
+# --- Page Exploration de données ---
+elif page == "Exploration de données":
+    st.title("Exploration de données")
+
+    # Filtre avec st.slider
+    min_sales, max_sales = st.slider("Filtrer par ventes globales (millions)", 0.0, float(df['Ventes_Globales'].max()), (0.0, float(df['Ventes_Globales'].max())))
+
+    # Filtrage des données
+    filtered_df = df[(df['Ventes_Globales'] >= min_sales) & (df['Ventes_Globales'] <= max_sales)]
+
+    # Affichage des données filtrées
+    st.write(f"Nombre de jeux affichés: {filtered_df.shape[0]}")
+    st.dataframe(filtered_df)
+
+# --- Page Visualisation ---
+elif page == "Visualisation":
+    # ... (votre code de visualisation) ...
+    pass
+
+from PIL import Image
+import os
+
+# Dictionnaire de correspondance des logos
+logos = {
+    'PS4': 'logos/images(6).png',
+    'XOne': 'logos/images(4).png',
+    'WiiU': 'logos/images(12).png',
+    'Wii': 'logos/images(11).png',
+    'NES': 'logos/images(13).jpeg',
+    'GB': 'logos/images (2).jpeg',
+    'GC': 'logo/images(7).jpeg',
+    'X360': 'logos/images (1).jpeg',
+    'XB': 'logos/images(3).jpeg',
+    'PS3': 'logos/images(5).jpeg',
+    'PS2': 'logos/images(8).png',
+    'DS': 'logos/images(9).png',
+    'SNES': 'logos/images(15).png',
+    'PSP': 'logos/images(10).png', 
+    'PS': 'logos/images(14).jpeg',
+    'GBA': 'logos/images(16).jpeg',
+    '3DS': 'logos/images(17).jpeg',
+    '2600': 'logos/images(18).png'
+
+    
+}
+ 
+# --- Barre latérale de navigation ---
+st.sidebar.title("Navigation")
+pages = ["Accueil", "Logos des plateformes"]
+page = st.sidebar.selectbox("Choisissez une page :", pages)
+
+# --- Page Accueil ---
+if page == "Accueil":
+    pass  # Ne rien afficher dans l'onglet Accueil
+
+# --- Page Logos des plateformes ---
+elif page == "Logos des plateformes": # et ici
+    st.title("Logos des plateformes de jeux vidéo")
+
+    # Sélection de la plateforme
+    platform_options = ['Toutes'] + list(df['Plateforme'].unique())
+    selected_platform = st.selectbox("Sélectionner une plateforme", platform_options)
+
+    # Afficher le logo si une plateforme est sélectionnée
+    if selected_platform != 'Toutes':
+        if selected_platform in logos:
+            logo_path = logos[selected_platform]
+            if os.path.exists(logo_path):
+                try:
+                    image = Image.open(logo_path)
+                    st.image(image, caption=selected_platform, width=200)  # Agrandir le logo
+                except Exception as e:
+                    st.error(f"Erreur lors du chargement du logo pour {selected_platform}: {e}")
+            else:
+                st.warning(f"Logo non trouvé pour {selected_platform} à l'emplacement: {logo_path}")
+        else:
+            st.info(f"Logo non disponible pour la plateforme : {selected_platform}")
+
+
+import streamlit as st
+
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #e8f5e9; 
+    }
+    .stApp {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+import streamlit as st
+
+st.markdown(
+    """
+    <style>
+    .stVerticalBlock.st-emotion-cache-64tehz.eu6p4el3 {
+        background-color: #f0f8ff;
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 5px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+import streamlit as st
+import streamlit.components.v1 as components
+
+components.html(
+    """
+    <script>
+    const verticalBlock = document.querySelector('.stVerticalBlock.st-emotion-cache-64tehz.eu6p4el3');
+    if (verticalBlock) {
+        verticalBlock.addEventListener('click', () => {
+            verticalBlock.style.backgroundColor = 'lightblue';
+        });
+
+        verticalBlock.addEventListener('mouseover', () => {
+            verticalBlock.style.transform = 'scale(1.05)';
+            verticalBlock.style.transition = 'transform 0.3s ease';
+        });
+
+        verticalBlock.addEventListener('mouseout', () => {
+            verticalBlock.style.transform = 'scale(1)';
+        });
+    }
+    </script>
+    """,
+    height=0,
+)
+
+import streamlit as st
+
+st.markdown(
+    """
+    <style>
+    .stMainBlockContainer.block-container.st-emotion-cache-mtjnbi.eht7o1d4 {
+        background-color: #f0f8ff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .stMainBlockContainer.block-container.st-emotion-cache-mtjnbi.eht7o1d4:hover {
+        transform: scale(1.02);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+import streamlit as st
+import streamlit.components.v1 as components
+
+components.html(
+    """
+    <script>
+    const mainBlock = document.querySelector('.stMainBlockContainer.block-container.st-emotion-cache-mtjnbi.eht7o1d4');
+    if (mainBlock) {
+        mainBlock.addEventListener('click', () => {
+            if (mainBlock.style.backgroundColor === 'lightblue') {
+                mainBlock.style.backgroundColor = '#f0f8ff'; // Couleur d'origine
+            } else {
+                mainBlock.style.backgroundColor = 'lightblue';
+            }
+        });
+
+        mainBlock.addEventListener('mouseover', () => {
+            mainBlock.style.transform = 'scale(1.05)'; // Agrandir légèrement au survol
+            mainBlock.style.transition = 'transform 0.3s ease';
+        });
+
+        mainBlock.addEventListener('mouseout', () => {
+            mainBlock.style.transform = 'scale(1)'; // Rétablir la taille d'origine
+        });
+    }
+    </script>
+    """,
+    height=0,  # Important: définit la hauteur de l'iframe à 0 pour qu'il ne soit pas visible
+)
+
+
+
+
+
+   
