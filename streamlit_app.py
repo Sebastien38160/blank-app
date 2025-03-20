@@ -1,3 +1,4 @@
+
 import streamlit as st
 
 st.markdown(
@@ -24,22 +25,168 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# Le reste de votre application Streamlit...
-
+import streamlit as st
 
 
 
+# Couleurs personnalisées
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #f0f8ff; /* Couleur de fond */
+    }
+    .stButton>button {
+        background-color: #4CAF50; /* Couleur des boutons */
+        color: white;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
+# Espacement
+st.markdown("<br>", unsafe_allow_html=True)  # Ajoute une ligne vide
+import streamlit as st
+import streamlit.components.v1 as components
+
+components.html(
+    """
+    <script>
+    const mainBlock = document.querySelector('.stMainBlockContainer.block-container.st-emotion-cache-mtjnbi.eht7o1d4');
+    if (mainBlock) {
+        mainBlock.addEventListener('click', () => {
+            if (mainBlock.style.backgroundColor === 'lightblue') {
+                mainBlock.style.backgroundColor = '#f0f8ff'; // Couleur d'origine
+            } else {
+                mainBlock.style.backgroundColor = 'lightblue';
+            }
+        });
+
+        mainBlock.addEventListener('mouseover', () => {
+            mainBlock.style.transform = 'scale(1.05)'; // Agrandir légèrement au survol
+            mainBlock.style.transition = 'transform 0.3s ease';
+        });
+
+        mainBlock.addEventListener('mouseout', () => {
+            mainBlock.style.transform = 'scale(1)'; // Rétablir la taille d'origine
+        });
+    }
+    </script>
+    """,
+    height=0,  # Important: définit la hauteur de l'iframe à 0 pour qu'il ne soit pas visible
+)
 import streamlit as st
 import pandas as pd 
 from PIL import Image
 import numpy as np 
 
-st.title("🎈 My new streamlit app")
+st.title("🎈 Ma nouvelle application streamlit")
 st.write(
-    "Let's start building! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
+    "Commençons à construire ! Pour trouver de l'aide et de l'inspiration, rendez-vous sur [docs.streamlit.io](https://docs.streamlit.io/)."
 )
+
+import sqlite3
+
+conn = sqlite3.connect("database.db")
+cursor = conn.cursor()
+
+# Vérifier l'intégrité de la base de données
+cursor.execute("PRAGMA integrity_check;")
+print(cursor.fetchone())
+
+conn.close()
+
+# ajout dans la barre de navigation "gestion des utilisateur"
+import streamlit as st
+from db import init_db, add_user, get_users
+
+# Initialiser la base de données (crée la table si elle n'existe pas)
+init_db()
+
+# --- Barre de navigation latérale ---
+with st.sidebar:
+    st.title("Gestion des utilisateurs")
+
+    # Formulaire pour ajouter un utilisateur
+    st.subheader("Ajouter un nouvel utilisateur")
+    new_user = st.text_input("Nom d'utilisateur", key="new_user")
+    new_password = st.text_input("Mot de passe", type="password", key="new_password")
+
+    if st.button("Ajouter l'utilisateur"):
+        if new_user and new_password:  # Vérifier que les champs ne sont pas vides
+            success = add_user(new_user, new_password)
+            if success:
+                st.success(f"L'utilisateur {new_user} a été ajouté avec succès !")
+            else:
+                st.error("Ce nom d'utilisateur existe déjà. Veuillez en choisir un autre.")
+        else:
+            st.warning("Veuillez remplir tous les champs.")
+
+    # Afficher la liste des utilisateurs
+    st.subheader("Liste des utilisateurs enregistrés")
+    users = get_users()
+    st.dataframe(users)  # Affichage sous forme de tableau
+
+# --- Contenu principal de l'application ---
+st.title("Contenu principal de l'application")
+st.write("Le contenu principal de votre application s'affiche ici.")
+
+
+# ajouter dans la barre de navigation "connexion et inscription"
+import sqlite3
+import streamlit as st
+import hashlib
+
+# Connexion à la base SQLite
+conn = sqlite3.connect("users.db")
+cursor = conn.cursor()
+
+# Création de la table users
+cursor.execute('''CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
+)''')
+conn.commit()
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def register_user(username, password):
+    cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hash_password(password)))
+    conn.commit()
+
+def authenticate_user(username, password):
+    cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, hash_password(password)))
+    return cursor.fetchone() is not None
+
+# --- Barre de navigation latérale ---
+with st.sidebar:
+    st.title("Authentification")
+
+    menu = st.selectbox("Menu", ["Connexion", "Inscription"])
+
+    if menu == "Inscription":
+        new_user = st.text_input("Nom d'utilisateur", key="inscription_nom_utilisateur")
+        new_pass = st.text_input("Mot de passe", type="password", key="inscription_mot_passe")
+        if st.button("S'inscrire"):
+            register_user(new_user, new_pass)
+            st.success("Inscription réussie")
+
+    if menu == "Connexion":
+        user = st.text_input("Nom d'utilisateur", key="connexion_nom_utilisateur")
+        password = st.text_input("Mot de passe", type="password", key="connexion_mot_passe")
+        if st.button("Se connecter"):
+            if authenticate_user(user, password):
+                st.success("Connexion réussie")
+            else:
+                st.error("Identifiants incorrects")
+
+
+
+
+
 
 import streamlit as st
 from PIL import Image
@@ -103,13 +250,15 @@ if uploaded_file is not None:
         st.subheader("Aperçu des données")
         st.dataframe(df.head())  
     
-    # 2️⃣ Aperçu des données
-    st.subheader("Aperçu des données")
-    st.dataframe(df.head())  # Affiche les 5 premières lignes du DataFrame
 
     # 3️⃣ Informations générales
     st.subheader("Informations générales")
-    st.write(df.info())
+    st.write("""
+Ce jeu de données présente les ventes de jeux vidéo à travers le monde, classées par popularité. 
+Les colonnes principales incluent le nom du jeu, la plateforme, l'année de sortie, le genre et l'éditeur. 
+Les ventes sont exprimées en millions d'unités vendues. 
+Cette analyse vise à identifier les jeux les plus populaires et les tendances du marché.
+""")
 
     # 4️⃣ Valeurs manquantes
     st.subheader("Valeurs manquantes")
@@ -563,38 +712,45 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# ajouter image fond ecran à l'application
+
+import base64
+
+def image_to_base64(image_path):
+    """Convertit une image en chaîne base64."""
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode()
+    return encoded_string
+
+image_path = "image fond ecran streamlit.jpeg"  # Remplacez par le chemin de votre image
+base64_image = image_to_base64(image_path)
+
 import streamlit as st
-import streamlit.components.v1 as components
+import base64
 
-components.html(
-    """
-    <script>
-    const mainBlock = document.querySelector('.stMainBlockContainer.block-container.st-emotion-cache-mtjnbi.eht7o1d4');
-    if (mainBlock) {
-        mainBlock.addEventListener('click', () => {
-            if (mainBlock.style.backgroundColor === 'lightblue') {
-                mainBlock.style.backgroundColor = '#f0f8ff'; // Couleur d'origine
-            } else {
-                mainBlock.style.backgroundColor = 'lightblue';
-            }
-        });
+def image_to_base64(image_path):
+    """Convertit une image en chaîne base64."""
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode()
+    return encoded_string
 
-        mainBlock.addEventListener('mouseover', () => {
-            mainBlock.style.transform = 'scale(1.05)'; // Agrandir légèrement au survol
-            mainBlock.style.transition = 'transform 0.3s ease';
-        });
+image_path = "image fond ecran streamlit.jpeg"  # Remplacez par le chemin de votre image
+base64_image = image_to_base64(image_path)
 
-        mainBlock.addEventListener('mouseout', () => {
-            mainBlock.style.transform = 'scale(1)'; // Rétablir la taille d'origine
-        });
-    }
-    </script>
+st.markdown(
+    f"""
+    <style>
+    body {{
+        background-image: url("data:image/jpeg;base64,{base64_image}");
+        background-size: cover;
+    }}
+    </style>
     """,
-    height=0,  # Important: définit la hauteur de l'iframe à 0 pour qu'il ne soit pas visible
+    unsafe_allow_html=True,
 )
 
 
 
 
+ 
 
-   
