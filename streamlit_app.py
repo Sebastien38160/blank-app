@@ -285,7 +285,7 @@ if page == "Accueil":
     st.write("Choisissez l'onglet Visualisation pour voir les graphiques.")
 
 # --- Page Visualisation ---
-elif page == "Visualisation":
+if page == "Visualisation":
     st.title("Visualisation des ventes par genre et par année")
 
     # Préparation des données pour le graphique en aires
@@ -306,7 +306,7 @@ elif page == "Visualisation":
 
 
 
-
+## Ajout d'un graphique en barre
 # --- Page Accueil ---
 if page == "Accueil":
     # Vous pouvez laisser cette page vide ou y mettre d'autres éléments
@@ -332,7 +332,7 @@ elif page == "Visualisation":
     # Affichage du graphique dans Streamlit
     st.pyplot(fig)
 
-
+## Ajout d'un graphique en aires
 # --- Page Accueil ---
 if page == "Accueil":
     pass  # Ne rien afficher dans l'onglet Accueil
@@ -346,7 +346,9 @@ elif page == "Visualisation":
 
     # Affichage du graphique en aires avec Streamlit
     st.area_chart(sales_by_genre)
-  
+
+
+ ## Ajout d'un graphique en camembert 
 import plotly.graph_objects as go
 # --- Page Accueil ---
 if page == "Accueil":
@@ -369,6 +371,7 @@ elif page == "Visualisation":
     st.plotly_chart(fig)
 
 
+## Ajout d'un graphique linéaire
 # --- Page Accueil ---
 if page == "Accueil":
     pass  # Ne rien afficher dans l'onglet Accueil
@@ -394,6 +397,7 @@ elif page == "Visualisation":
     st.plotly_chart(fig)
 
 
+## Ajout d'un graphique en violon
 # --- Page Accueil ---
 if page == "Accueil":
     pass  # Ne rien afficher dans l'onglet Accueil
@@ -451,7 +455,7 @@ elif page == "Visualisation":
     # Affichage du graphique dans Streamlit
     st.plotly_chart(fig)   
     
-
+## Ajout d'un graphique de dispersion
 # --- Page Accueil ---
 if page == "Accueil":
     pass  # Ne rien afficher dans l'onglet Accueil
@@ -478,6 +482,8 @@ elif page == "Visualisation":
     # Affichage du graphique dans Streamlit
     st.plotly_chart(fig)
 
+
+## Ajout d'un graphique en barres groupées
 import plotly.graph_objects as go   
 # --- Page Accueil ---
 if page == "Accueil":
@@ -571,6 +577,8 @@ elif page == "Visualisation":
     # ... (votre code de visualisation) ...
     pass
 
+
+## Ajout des logos des différentes plateforme de jeux vidéos
 from PIL import Image
 import os
 
@@ -713,7 +721,6 @@ st.markdown(
 )
 
 # ajouter image fond ecran à l'application
-
 import base64
 
 def image_to_base64(image_path):
@@ -749,8 +756,4 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
-
-
- 
 
