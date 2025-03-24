@@ -47,6 +47,8 @@ st.markdown(
 
 # Espacement
 st.markdown("<br>", unsafe_allow_html=True)  # Ajoute une ligne vide
+
+
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -756,4 +758,129 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+## Ajout de "paramétres" dans navigation
+import streamlit as st
 
+# --- Barre latérale de navigation ---
+st.sidebar.title("Navigation")
+pages = ["Accueil","Paramètres"]  # Ajoutez "Paramètres"
+page = st.sidebar.selectbox("Choisissez une page :", pages)
+
+# --- Page Exploration de données ---
+if page == "Exploration de données":
+    st.title("Exploration de données")
+    # ... votre code pour l'exploration de données ...
+
+# --- Page Visualisation ---
+elif page == "Visualisation":
+    st.title("Visualisation")
+    # ... votre code pour la visualisation ...
+
+# --- Page Paramètres ---
+elif page == "Paramètres":
+    st.title("Paramètres et Ressources")
+
+    st.header("À propos de Streamlit")
+    st.write(
+        """
+        Streamlit est un framework Python open-source qui permet de créer facilement des applications web interactives pour la science des données et le machine learning.
+        """
+    )
+    st.markdown("[Documentation Streamlit](https://docs.streamlit.io/)")
+
+    st.header("Charte graphique")
+    st.write(
+        """
+        Voici la charte graphique utilisée pour cette application :
+        """
+    )
+    st.write("- Couleur principale : #007bff (bleu)")
+    st.write("- Couleur secondaire : #28a745 (vert)")
+    st.write("- Couleur de fond : #f0f8ff")
+
+    st.header("Ressources utiles")
+    st.markdown("- [Charte graphique 1](https://docs.streamlit.io/library/get-started/main-concepts)")
+    st.markdown("- [Charte graphique 2](https://docs.streamlit.io/library/advanced-features/configuration)")
+
+
+
+## Ajout collecte de données
+import streamlit as st
+import sqlite3
+
+def collect_user_data():
+    """Collecte les données personnelles de l'utilisateur."""
+    nom_utilisateur = st.text_input("Nom d'utilisateur")
+    email = st.text_input("Adresse e-mail")
+    # Ajoutez d'autres champs nécessaires
+    return {"nom_utilisateur": nom_utilisateur, "email": email}
+
+def store_user_data(data):
+    """Stocke les données personnelles dans la base de données."""
+    conn = sqlite3.connect("utilisateurs.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS utilisateurs (
+            nom_utilisateur TEXT,
+            email TEXT
+        )
+    """)
+    cursor.execute("INSERT INTO utilisateurs VALUES (?, ?)", (data["nom_utilisateur"], data["email"]))
+    conn.commit()
+    conn.close()
+
+# Exemple d'utilisation
+user_data = collect_user_data()
+if st.button("Enregistrer"):
+    store_user_data(user_data)
+    st.success("Données enregistrées !")
+
+
+## Ajout du consentement de l'utilisateur
+import streamlit as st
+
+def get_user_consent():
+    """Obtient le consentement de l'utilisateur."""
+    consent = st.checkbox("J'accepte que mes données soient utilisées conformément à la politique de confidentialité.")
+    return consent
+
+# Exemple d'utilisation
+consent = get_user_consent()
+if consent:
+    st.write("Consentement accordé !")
+else:
+    st.write("Veuillez accepter la politique de confidentialité.")
+
+
+## Ajout des droits des utlisateurs
+import streamlit as st
+import sqlite3
+
+def get_user_data(nom_utilisateur):
+    """Récupère les données personnelles de l'utilisateur."""
+    conn = sqlite3.connect("utilisateurs.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM utilisateurs WHERE nom_utilisateur = ?", (nom_utilisateur,))
+    data = cursor.fetchone()
+    conn.close()
+    return data
+
+def delete_user_data(nom_utilisateur):
+    """Supprime les données personnelles de l'utilisateur."""
+    conn = sqlite3.connect("utilisateurs.db")
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM utilisateurs WHERE nom_utilisateur = ?", (nom_utilisateur,))
+    conn.commit()
+    conn.close()
+
+# Exemple d'utilisation
+nom_utilisateur = st.text_input("Nom d'utilisateur", key="nom_utilisateur_input")  # Ajout de key
+if st.button("Afficher mes données", key="afficher_donnees"):  # Ajout de key
+    data = get_user_data(nom_utilisateur)
+    if data:
+        st.write(data)
+    else:
+        st.write("Utilisateur non trouvé.")
+if st.button("Supprimer mes données", key="supprimer_donnees"):  # Ajout de key
+    delete_user_data(nom_utilisateur)
+    st.success("Données supprimées !")
