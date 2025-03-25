@@ -1,0 +1,9 @@
+Veille technologique:
+
+- Exploration de la documentation de streamlit: J'ai exploré la documentation de streamlit et les tutorielsen ligne pour maitriser ses fonctionnalités interactives. 
+- Suivi des mises à jour de Pandas: J'ai suivi les derniéres mises à jour de Pandas pour optimiser le traitement des données. 
+- Utilisation de pytest: J'ai appris à utiliser pystest pour automatiser les tests unitaires et assurer la qualité du code
+
+Conclusion: 
+
+Grace à l'aide des IA et à une veille technologique constante, j'ai pu surmonter les difficultés rencontrées et developper une application Streamlit fonctionnelle et efficace. J'ai acquis une meilleure maitrise des outils de données et des tests unitaires, ce qui me permettra de développer des applications plus robustes à l'avenir si necessaire. 

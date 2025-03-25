@@ -1,0 +1,10 @@
+Difficultés rencontrées:
+
+- Courbe d'apprentissage de streamlit: la prise en main de strealit a été difficle au début, notamment pour la gestion de la mise en page et des interactions. 
+- Tests unitaires: La mise en place de tests unitaires avec pytest a été un défi, notamment pour comprendre les erreurs d'importation et la structure des fichiers tests. 
+
+Aide apportée par les IA:
+
+- Géneration de code: Les IA ont aidé à générer des extraits de code pour le chargement, le nettoyage et la visualisation des données
+- Résolution de problème: Les IA ont aidé à indentifur et à résoudre les erreurs de code, notamment les problèmes d'importationet les erreurs liées à pytest. 
+- Explications et tutoriels: Les IA ont fourni des explications claires et concises sur les concepts et les outils utilisés, facilitant ainsi l'apprentissage. 

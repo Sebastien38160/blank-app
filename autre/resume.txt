@@ -1,0 +1,3 @@
+Project Summary: Video Game Sales Data Analysis Streamlit Application
+
+This Streamlit application provides a user-friendly interface to analyze and visualize video game sales data. Users can upload CSV files, filter data by genre, platform, and year, and explore descriptive statistics and visualizations. The application utilizes Pandas for data manipulation and Streamlit for interactive visualizations, empowering users to efficiently gain insights into sales trends and patterns.

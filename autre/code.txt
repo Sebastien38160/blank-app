@@ -1,0 +1,76 @@
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+st.title(" Exploration de données")
+
+# 1️⃣ Chargement du fichier CSV
+uploaded_file = st.file_uploader("vgsales_cleaning.csv", type=["csv"])
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+
+# Créer des onglets pour séparer exploration et visualisation
+    tab_exploration, tab_visualisation = st.tabs(["Exploration des données", "Visualisation"])
+    
+    # 2️⃣ Exploration des données (dans l'onglet exploration)
+    with tab_exploration:
+        st.subheader("Aperçu des données")
+        st.dataframe(df.head())  
+    
+
+    # 3️⃣ Informations générales
+    st.subheader("Informations générales")
+    st.write("""
+Ce jeu de données présente les ventes de jeux vidéo à travers le monde, classées par popularité. 
+Les colonnes principales incluent le nom du jeu, la plateforme, l'année de sortie, le genre et l'éditeur. 
+Les ventes sont exprimées en millions d'unités vendues. 
+Cette analyse vise à identifier les jeux les plus populaires et les tendances du marché.
+""")
+
+    # 4️⃣ Valeurs manquantes
+    st.subheader("Valeurs manquantes")
+    st.write(df.isnull().sum())
+
+    # 5️⃣ Statistiques descriptives
+    st.subheader("Statistiques générales")
+    st.write(df.describe())
+else:
+    st.write("Veuillez télécharger un fichier CSV pour commencer l'analyse.")
+
+
+# Analyse detaillé:
+
+1. Chargement du fichier CSV:
+- Utilisation de st.file_uploader pour permettre à l'utilisateur de télécharger un fichier CSV. 
+- Utilisation de pandas.read_csv pour lire le fichier téléchargé
+- Gestion du cas ou aucun fichier n'est téléchargé
+
+
+2. Création d'onglets:
+- Utilisationde st.tabs pour séparer des données et la visualisation. 
+
+
+3. Exploration des données:
+- Affichage d'un aperçu des données avec st.dataframe(df.head()). 
+- Affichage d'informations générales sur le dataset
+- Affichage du nombre de valeurs manquantes avec df.isnull().sum(). 
+- Affichage des statistiques descriptive avec df.describe(). 
+
+
+4. Structure et organisation
+- Utilisation de commentaires pour annoter les différentes sections du code
+- Utilisation de sous-titres(st.subheader) pour organiser le contenu
+
+
+5. Interactivité:
+- Utilisation de st.file_uploader pour permettre à l'utilisateur de télécharger un fichier. 
+
+
+6. Veille technologique:
+- Utilisation de Streamlit, Pandas, Matplotlib, seaborn
+
+
+7. Gestions des erreurs:
+- Gestion du cas ou aucun fichier n'est télécharger
+
