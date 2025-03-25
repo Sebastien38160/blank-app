@@ -17,3 +17,8 @@ A simple Streamlit app template for you to modify!
    ```
    $ streamlit run streamlit_app.py
    ```
+
+![Diagramme de classes UML](plantUML.png)
+
+
+![Capture d'écran du fichier.css](captureCSS.png)

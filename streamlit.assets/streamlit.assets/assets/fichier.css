@@ -1,0 +1,29 @@
+import streamlit as st
+
+st.markdown(
+    """
+    <style>
+    /* Cibler les titres principaux */
+    h1 {
+        color: #007bff !important; /* Bleu */
+    }
+
+    /* Cibler les sous-titres */
+    h2, h3 {
+        color: #28a745 !important; /* Vert */
+    }
+
+    /* Cibler les paragraphes qui servent de sous-titres */
+    /* Remplacez .votre-classe-de-sous-titre par la classe réelle */
+    .st-emotion-cache-r421ms p {
+        color: #6c757d !important; /* Gris */
+    }
+
+    /* Ajoutez d'autres sélecteurs et styles ici */
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
