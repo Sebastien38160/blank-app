@@ -485,6 +485,144 @@ elif page == "Visualisation":
     st.plotly_chart(fig)
 
 
+## Graphique de diagramme de Sankey des ventes par genre, plateforme et éditeur
+import streamlit as st
+import pandas as pd
+import plotly.graph_objects as go
+
+# Charger les données (si ce n'est pas déjà fait)
+df = pd.read_csv("vgsales_cleaned.csv")
+
+# --- Page Visualisation ---
+if page == "Visualisation":
+    st.title("Flux des ventes par genre, plateforme et éditeur (amélioré)")
+
+    # 1. Sélectionner les genres, plateformes et éditeurs les plus importants
+    top_genres = df['Genre'].value_counts().nlargest(3).index
+    top_platforms = df['Plateforme'].value_counts().nlargest(3).index
+    top_publishers = df['Éditeur'].value_counts().nlargest(3).index
+
+    # 2. Filtrer les données
+    filtered_df = df[df['Genre'].isin(top_genres) & df['Plateforme'].isin(top_platforms) & df['Éditeur'].isin(top_publishers)]
+
+    # 3. Préparation des données pour le diagramme de Sankey
+    sankey_data = filtered_df.groupby(['Genre', 'Plateforme', 'Éditeur'])['Ventes_Globales'].sum().reset_index()
+    labels = list(sankey_data['Genre'].unique()) + list(sankey_data['Plateforme'].unique()) + list(sankey_data['Éditeur'].unique())
+    source_nodes = sankey_data['Genre'].map(lambda x: labels.index(x))
+    target_nodes = sankey_data['Plateforme'].map(lambda x: labels.index(x))
+    target_nodes_2 = sankey_data['Éditeur'].map(lambda x: labels.index(x))
+    sources = list(source_nodes) + list(target_nodes)
+    targets = list(target_nodes) + list(target_nodes_2)
+    values = list(sankey_data['Ventes_Globales']) + list(sankey_data['Ventes_Globales'])
+
+    # 4. Création du diagramme de Sankey
+    fig = go.Figure(data=[go.Sankey(
+        node=dict(
+            pad=20,  # Augmenter l'espace entre les nœuds
+            thickness=20,
+            line=dict(color="black", width=0.5),
+            label=labels,
+            color=['skyblue', 'lightgreen', 'salmon', 'gold', 'lightcoral', 'lightseagreen', 'plum', 'peru', 'lightskyblue']  # Couleurs personnalisées
+        ),
+        link=dict(
+            source=sources,
+            target=targets,
+            value=values,
+            color='rgba(128, 128, 128, 0.5)'  # Couleur des liens plus claire
+        ))])
+
+    # 5. Personnalisation du graphique
+    fig.update_layout(title_text="Flux des ventes par genre, plateforme et Éditeur (amélioré)", font_size=12)
+
+    # 6. Affichage du graphique dans Streamlit
+    st.plotly_chart(fig)
+
+
+
+
+## Création d'une carte interactive des ventes par région
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+# Charger les données (si ce n'est pas déjà fait)
+df = pd.read_csv("vgsales_cleaned.csv")
+
+# --- Page Visualisation ---
+if page == "Visualisation":
+    st.title("Ventes mondiales par région")
+    
+    # 1. Sélectionner l'année
+    years = sorted(df['Année'].dropna().unique().astype(int))
+    selected_year = st.selectbox("Sélectionner une année", years, key="year_selectbox") # Ajout de key
+
+    # 2. Filtrer les données par année
+    year_df = df[df['Année'] == selected_year]
+
+
+    # 1. Transformer les noms de régions en noms de pays reconnus par Plotly Express
+    region_mapping = {
+        'Ventes_Nord_Amerique': 'United States',  # Exemple : vous pouvez choisir un pays représentatif
+        'Ventes_Europe': 'France', 'Angleterre'  # Vous pouvez utiliser "Europe" pour une vue d'ensemble
+        'Ventes_Japon': 'Japan',
+        'Autres_Ventes': 'World'  # Vous pouvez utiliser "World" pour les autres ventes
+    }
+
+    # 2. Adapter la logique de regroupement des ventes
+    region_sales = pd.DataFrame({
+        'Region': list(region_mapping.values()),
+        'Global Sales (Millions)': [
+            df['Ventes_Nord_Amerique'].sum(),
+            df['Ventes_Europe'].sum(),
+            df['Ventes_Japon'].sum(),
+            df['Autres_Ventes'].sum()
+        ]
+    })
+
+    # Création de la carte choroplèthe
+    fig = px.choropleth(region_sales,
+                        locations='Region',
+                        locationmode='country names',
+                        color='Global Sales (Millions)',
+                        hover_name='Region',
+                        title='Ventes mondiales par région')
+
+    # Affichage de la carte dans Streamlit
+    st.plotly_chart(fig)
+
+
+
+## Graphique de séries chronologiques interactif des ventes par genre
+import streamlit as st
+import pandas as pd
+import plotly.graph_objects as go
+
+# Charger les données (si ce n'est pas déjà fait)
+df = pd.read_csv("vgsales_cleaned.csv")
+
+# --- Page Visualisation ---
+if page == "Visualisation":
+    st.title("Évolution des ventes par genre au fil du temps")
+
+    # Préparation des données pour le graphique
+    genre_year_sales = df.groupby(['Année', 'Genre'])['Ventes_Globales'].sum().reset_index()
+    genres = genre_year_sales['Genre'].unique()
+
+    # Création du graphique de séries chronologiques
+    fig = go.Figure()
+    for genre in genres:
+        genre_data = genre_year_sales[genre_year_sales['Genre'] == genre]
+        fig.add_trace(go.Scatter(x=genre_data['Année'], y=genre_data['Ventes_Globales'], mode='lines+markers', name=genre))
+
+    # Personnalisation du graphique
+    fig.update_layout(title='Évolution des ventes par genre au fil du temps',
+                      xaxis_title='Année',
+                      yaxis_title='Ventes globales (millions)',
+                      hovermode='x unified')
+
+    # Affichage du graphique dans Streamlit
+    st.plotly_chart(fig)
+
 ## Ajout d'un graphique en barres groupées
 import plotly.graph_objects as go   
 # --- Page Accueil ---
@@ -884,3 +1022,5 @@ if st.button("Afficher mes données", key="afficher_donnees"):  # Ajout de key
 if st.button("Supprimer mes données", key="supprimer_donnees"):  # Ajout de key
     delete_user_data(nom_utilisateur)
     st.success("Données supprimées !")
+
+
