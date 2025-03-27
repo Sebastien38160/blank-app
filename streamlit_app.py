@@ -1,4 +1,6 @@
 
+
+## Code CSS pour personnaliser l'apparence des titres et sous titres de l'application
 import streamlit as st
 
 st.markdown(
@@ -130,10 +132,10 @@ with st.sidebar:
     users = get_users()
     st.dataframe(users)  # Affichage sous forme de tableau
 
+
 # --- Contenu principal de l'application ---
 st.title("Contenu principal de l'application")
 st.write("Le contenu principal de votre application s'affiche ici.")
-
 
 # ajouter dans la barre de navigation "connexion et inscription"
 import sqlite3
@@ -187,9 +189,7 @@ with st.sidebar:
 
 
 
-
-
-
+## Création de la barre laterale avec les onglets
 import streamlit as st
 from PIL import Image
 import pandas as pd
@@ -232,6 +232,8 @@ elif page == "À propos de":
     st.title("ℹ️ À propos de cette application")
     st.write("Cette application a été créée avec Streamlit pour afficher des données et des images.")
 
+
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -245,7 +247,7 @@ if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
 # Créer des onglets pour séparer exploration et visualisation
-    tab_exploration, tab_visualisation = st.tabs(["Exploration des données", "Visualisation"])
+    tab_exploration, tab_visualisation = st.tabs(["Exploration des données"])
     
     # 2️⃣ Exploration des données (dans l'onglet exploration)
     with tab_exploration:
@@ -333,6 +335,104 @@ elif page == "Visualisation":
 
     # Affichage du graphique dans Streamlit
     st.pyplot(fig)
+
+
+## Graphique des éditeurs de jeux vidéo les plus vendeurs
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+from wordcloud import WordCloud
+
+# --- Page Visualisation ---
+if page == "Visualisation":
+    st.title("Éditeurs de jeux vidéo les plus vendeurs")
+
+    # Préparation des données pour le graphique
+    publisher_sales = df.groupby('Éditeur')['Ventes_Globales'].sum().nlargest(10).reset_index()
+
+    # Création du graphique en barres avec Plotly Express
+    fig = px.bar(publisher_sales, x='Éditeur', y='Ventes_Globales',
+                 title="Top 10 des éditeurs de jeux vidéo par ventes globales",
+                 labels={'Ventes_Globales': 'Ventes globales (millions)'},
+                 color='Ventes_Globales',  # Couleur basée sur les ventes
+                 color_continuous_scale='viridis')  # Palette de couleurs
+
+    # Personnalisation du graphique
+    fig.update_layout(xaxis_tickangle=-45)  # Rotation des étiquettes de l'axe X
+
+    # Affichage du graphique dans Streamlit
+    st.plotly_chart(fig)
+  
+
+
+## Graphique information sur les jeux vidéos
+# --- Page Visualisation ---
+if page == "Visualisation":
+    st.title("Informations sur les jeux vidéo")
+
+    # Sélection du jeu
+    jeux = sorted(df['Nom'].unique())
+    jeu_selectionne = st.selectbox("Sélectionnez un jeu :", jeux)
+
+    # Filtrer les données pour le jeu sélectionné
+    jeu_data = df[df['Nom'] == jeu_selectionne]
+
+    if not jeu_data.empty:
+        # Création du graphique en barres avec Plotly Express
+        fig = px.bar(jeu_data, x='Plateforme', y='Ventes_Globales',
+                     title=f"Ventes globales de {jeu_selectionne} par plateforme",
+                     labels={'Ventes_Globales': 'Ventes globales (millions)'},
+                     color='Plateforme')
+
+        # Affichage du graphique dans Streamlit
+        st.plotly_chart(fig)
+
+        # Affichage des informations sur le jeu
+        st.write(f"**Date de sortie :** {jeu_data['Année'].iloc[0]}")
+        st.write(f"**Éditeur :** {jeu_data['Éditeur'].iloc[0]}")
+        st.write(f"**Genre :** {jeu_data['Genre'].iloc[0]}")
+    else:
+        st.info("Aucune information disponible pour ce jeu.")
+
+
+
+
+
+
+
+
+
+
+## Graphique qui selectionne un éditeur et d'afficher ses jeux
+# --- Page Visualisation ---
+if page == "Visualisation":
+    st.title("Jeux vidéo par éditeur")
+
+    # Sélection de l'éditeur
+    editeurs = sorted(df['Éditeur'].unique())
+    editeur_selectionne = st.selectbox("Sélectionnez un éditeur :", editeurs)
+
+    # Filtrer les données pour l'éditeur sélectionné
+    editeur_data = df[df['Éditeur'] == editeur_selectionne]
+
+    if not editeur_data.empty:
+        # Création du graphique en barres avec Plotly Express
+        fig = px.bar(editeur_data, x='Nom', y='Ventes_Globales',
+                     title=f"Jeux de {editeur_selectionne} par ventes globales",
+                     labels={'Ventes_Globales': 'Ventes globales (millions)'},
+                     color='Nom')
+
+        # Personnalisation du graphique
+        fig.update_layout(xaxis_tickangle=-45)  # Rotation des étiquettes de l'axe X
+
+        # Affichage du graphique dans Streamlit
+        st.plotly_chart(fig)
+    else:
+        st.info("Aucun jeu trouvé pour cet éditeur.")
+
+
+
+
 
 ## Ajout d'un graphique en aires
 # --- Page Accueil ---
@@ -456,7 +556,9 @@ elif page == "Visualisation":
 
     # Affichage du graphique dans Streamlit
     st.plotly_chart(fig)   
-    
+
+
+
 ## Ajout d'un graphique de dispersion
 # --- Page Accueil ---
 if page == "Accueil":
@@ -483,6 +585,7 @@ elif page == "Visualisation":
 
     # Affichage du graphique dans Streamlit
     st.plotly_chart(fig)
+
 
 
 ## Graphique de diagramme de Sankey des ventes par genre, plateforme et éditeur
