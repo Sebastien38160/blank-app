@@ -309,6 +309,128 @@ if page == "Visualisation":
     st.pyplot(fig)
 
 
+## Ajouter un selecteur genre de jeu video
+
+## Ajouter un selecteur genre de jeu video
+
+# Charger votre dataset
+try:
+    df = pd.read_csv('vgsales_cleaned.csv')
+except FileNotFoundError:
+    st.error("Le fichier 'vgsales_cleaned.csv' n'a pas été trouvé.")
+    st.stop()
+
+# --- Page Accueil ---
+if page == "Accueil":
+
+    # Extraire les genres uniques de la colonne 'Genre' (ou le nom de votre colonne de genre)
+    genres = df['Genre'].unique()
+
+    # Sélecteur pour choisir un genre
+    selected_genre = st.selectbox("Sélectionnez un genre :", genres)
+
+    # Filtrer les données en fonction du genre sélectionné
+    filtered_df = df[df['Genre'] == selected_genre]
+    st.write(filtered_df)
+
+
+## Ajour d'un bouton type de classement jeus les plus vendus croissant et décroissant
+# Charger votre dataset
+try:
+    df = pd.read_csv('vgsales_cleaned.csv')
+except FileNotFoundError:
+    st.error("Le fichier 'vgsales_cleaned.csv' n'a pas été trouvé.")
+    st.stop()
+
+# --- Page Accueil ---
+if page == "Accueil":
+
+    classement_type = st.radio("Type de classement :", ['Croissant', 'Décroissant'])
+
+    # Trier les données en fonction du type de classement sélectionné
+    if classement_type == 'Croissant':
+        sorted_df = df.sort_values(by='Ventes_Globales') # Utiliser la colonne Global_Sales
+    else:
+        sorted_df = df.sort_values(by='Ventes_Globales', ascending=False) # Utiliser la colonne Global_Sales
+
+    st.write(sorted_df)
+
+
+## Ajout d'un sélecteurs de date et d'heure
+import datetime
+# Charger votre dataset
+try:
+    df = pd.read_csv('vgsales_cleaned.csv')
+except FileNotFoundError:
+    st.error("Le fichier 'vgsales_cleaned.csv' n'a pas été trouvé.")
+    st.stop()
+
+# Page d'accueil
+if page == "Accueil":
+
+    # Extraire les années uniques de la colonne 'Year' (ou le nom de votre colonne d'année)
+    annees = df['Année'].unique()
+
+    # Utiliser la plage d'années pour le sélecteur
+    selected_annee = st.selectbox("Sélectionnez l'année :", annees)
+
+    # Filtrer les données en fonction de l'année sélectionnée
+    filtered_df = df[df['Année'] == selected_annee]
+    st.write(filtered_df)
+
+
+## Case à cocher booléenne
+# Charger votre dataset
+try:
+    df = pd.read_csv('vgsales_cleaned.csv')
+except FileNotFoundError:
+    st.error("Le fichier 'vgsales_cleaned.csv' n'a pas été trouvé.")
+    st.stop()
+# Page acceuil
+if page == "Accueil":
+    # Case à cocher pour filtrer les jeux avec des ventes mondiales élevées
+    afficher_meilleurs_ventes = st.checkbox("Afficher uniquement les jeux avec des ventes mondiales élevées")
+
+    # Filtrer les données en fonction de la case à cocher
+    if afficher_meilleurs_ventes:
+        # Filtrer les jeux avec des ventes mondiales supérieures à 10 millions (par exemple)
+        filtered_df = df[df['Ventes_Globales'] > 10]
+        st.write(filtered_df)
+    else:
+        st.write(df)
+
+
+
+
+
+
+## Sélectionner plusieurs plateformes de jeu
+# Charger votre dataset 
+try:
+    df = pd.read_csv('vgsales_cleaned.csv')
+except FileNotFoundError:
+    st.error("Le fichier 'votre_dataset.csv' n'a pas été trouvé.")
+    st.stop()
+# Page acceuil
+if page == "Accueil":
+
+    # Sélecteur pour choisir un jeu
+    jeux = df['Nom'].unique()  # Utiliser la colonne "Name" de votre dataset
+    selected_jeu = st.selectbox("Sélectionnez un jeu :", jeux)
+
+    # Sélecteur pour choisir une ou plusieurs plateformes
+    plateformes = df['Plateforme'].unique()  # Utiliser la colonne "Platform" de votre dataset
+    selected_plateformes = st.multiselect("Sélectionnez les plateformes :", plateformes)
+
+    # Filtrer les données en fonction du jeu et des plateformes sélectionnés
+    filtered_df = df[(df['Nom'] == selected_jeu) & (df['Plateforme'].isin(selected_plateformes))]
+    st.write(filtered_df)
+
+
+
+
+    
+  
 
 ## Ajout d'un graphique en barre
 # --- Page Accueil ---
@@ -341,7 +463,7 @@ elif page == "Visualisation":
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from wordcloud import WordCloud
+
 
 # --- Page Visualisation ---
 if page == "Visualisation":
