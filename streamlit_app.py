@@ -247,10 +247,10 @@ if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
 # Créer des onglets pour séparer exploration et visualisation
-    tab_exploration, tab_visualisation = st.tabs(["Exploration des données"])
+    tab_exploration = st.tabs(["Exploration des données"])
     
     # 2️⃣ Exploration des données (dans l'onglet exploration)
-    with tab_exploration:
+    with tab_exploration[0]:
         st.subheader("Aperçu des données")
         st.dataframe(df.head())  
     
